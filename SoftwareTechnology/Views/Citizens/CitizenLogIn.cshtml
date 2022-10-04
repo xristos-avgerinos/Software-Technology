@@ -1,0 +1,71 @@
+﻿@model Citizen
+<html>
+
+
+<body>
+
+    <section class="text-center">
+        <!-- Background image -->
+        <div class="p-5 bg-image" style=" background-image: url('https://www.lse.ac.uk/international-relations/assets/images/page-headers/covid19-1400x300.jpg'); 
+      height: 270px; background-size: contain; "></div>
+        <!-- Background image -->
+
+        <div class="card mx-4 mx-md-5 shadow-5-strong" style="
+        margin-top: -100px;
+        background: hsla(0, 0%, 100%, 0.8);
+        backdrop-filter: blur(30px);
+        ">
+            <div class="card-body py-1 px-md-5">
+
+                <div class="row d-flex justify-content-center">
+                    <div class="col-lg-8">
+                        <br />
+                        <h2 class="fw-bold mb-3">Σύνδεση Πολίτη</h2>
+                        <form method="post">
+
+                            <div class="form-outline mb-4">
+                                <input type="text" id="form3Example4" class="form-control" asp-for="username" placeholder="Εισάγετε Όνομα χρήστη" required onkeypress="CheckSpace(event)" />
+                                <label class="form-label h5" for="form3Example4" asp-for="username">Όνομα Χρήστη</label>
+                            </div>
+
+                            <div class="form-outline mb-4">
+                                <input type="password" id="form3Example4"  placeholder="Εισάγετε Κωδικό πρόσβασης" class="form-control" asp-for="password" required onkeypress="CheckSpace(event)" />
+                                <label class="form-label h5" for="form3Example4" asp-for="password">Κωδικός Πρόσβασης</label>
+                            </div>
+
+                            <div class=" form-outline mb-4 col-xl-10 offset-2  text-left">
+                                <div asp-validation-summary="All" class=" text-danger"></div>
+
+                            </div>
+                            <!-- Submit button -->
+                            <button type="submit" class="btn btn-primary btn-block mb-4">
+                                Σύνδεση
+                            </button>
+
+          
+                             <p class="text-center text-muted mt-5 mb-0 ">Δεν Εχετε Λογαριαμό; <a asp-action="CitizenSignUp" asp-controller="Citizens" class="text-success "> Δημιουργία Λογαριασμού</a></p>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+</body>
+
+</html>
+
+<script>
+    function CheckSpace(event) {
+        if (event.which == 32) {
+            event.preventDefault();
+            return false;
+        }
+    }
+
+</script>
+
+
+

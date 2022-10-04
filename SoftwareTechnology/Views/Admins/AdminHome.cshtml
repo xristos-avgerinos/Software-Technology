@@ -1,0 +1,223 @@
+﻿@model List<VaccineCentre>
+@using Microsoft.AspNetCore.Http
+
+@inject IHttpContextAccessor httpContext
+
+
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords"
+          content="wrappixel, admin dashboard, html css dashboard, web dashboard, bootstrap 5 admin, bootstrap 5, css3 dashboard, bootstrap 5 dashboard, Ample lite admin bootstrap 5 dashboard, frontend, responsive bootstrap 5 admin template, Ample admin lite dashboard bootstrap 5 dashboard template">
+    <meta name="description"
+          content="Ample Admin Lite is powerful and clean admin dashboard template, inpired from Bootstrap Framework">
+    <meta name="robots" content="noindex,nofollow">
+
+
+    <link href="~/css/admin/chartist.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/admin/chartist-plugin-tooltip.css">
+    <link href="~/css/admin/style.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+
+
+
+    <!-- ============================================================== -->
+    <!-- Main wrapper - style you can find in pages.scss -->
+    <!-- ============================================================== -->
+    <!-- Page wrapper  -->
+    <!-- ============================================================== -->
+    <div class="page-wrapper border">
+        <!-- ============================================================== -->
+        <!-- Bread crumb and right sidebar toggle -->
+        <!-- ============================================================== -->
+        <div class="page-breadcrumb bg-white">
+            <div class="row align-items-center ">
+                <div class="col-md-6">
+                    <h4 class="page-title">Καλώς ήρθες @ViewBag.admin</h4>
+                </div>
+                <div class="col-md-6 text-right">
+                    <a asp-action="LogOut" asp-controller="Admins" class="btn btn-info text-white btn-outline-secondary">Αποσύνδεση</a>
+
+                </div>
+
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- ============================================================== -->
+        <!-- End Bread crumb and right sidebar toggle -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- Container fluid  -->
+        <!-- ============================================================== -->
+        <div class="container-fluid " style="background-color: #f8f9fc">
+            <!-- ============================================================== -->
+            <!-- Three charts -->
+            <!-- ============================================================== -->
+            <div class="row justify-content-center">
+                <div class="col-lg-4 col-md-12">
+                    <div class="white-box analytics-info">
+                        <h3 class="box-title">Συνολικοί Εγγεγραμένοι Πολίτες</h3>
+                        <ul class="list-inline two-part d-flex align-items-center mb-0">
+                            <li>
+                                <div id="sparklinedash">
+                                    <canvas width="67" height="30"
+                                            style="display: inline-block; width: 67px; height: 30px; vertical-align: top;"></canvas>
+                                </div>
+                            </li>
+                            <li class="ms-auto"><span class="counter text-success">@ViewBag.countCIT</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-12">
+                    <div class="white-box analytics-info">
+                        <h3 class="box-title">Συνολικοί Υπάληλλοι</h3>
+                        <ul class="list-inline two-part d-flex align-items-center mb-0">
+                            <li>
+                                <div id="sparklinedash2">
+                                    <canvas width="67" height="30"
+                                            style="display: inline-block; width: 67px; height: 30px; vertical-align: top;"></canvas>
+                                </div>
+                            </li>
+                            <li class="ms-auto"><span class="counter text-purple">@ViewBag.countEMP</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-12">
+                    <div class="white-box analytics-info">
+                        <h3 class="box-title">Συνολικά Εμβολιαστικά Κέντρα</h3>
+                        <ul class="list-inline two-part d-flex align-items-center mb-0">
+                            <li>
+                                <div id="sparklinedash3">
+                                    <canvas width="67" height="30"
+                                            style="display: inline-block; width: 67px; height: 30px; vertical-align: top;"></canvas>
+                                </div>
+                            </li>
+                            <li class="ms-auto">
+                                <span class="counter text-info">@ViewBag.countVC</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- ============================================================== -->
+            <!--  -->
+            <!-- ============================================================== -->
+            <div class="row">
+                <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                    <div class="white-box">
+                        <h3 class="box-title">Δραστηριότητα Επισκέψεων 2021</h3>
+                        <div class="d-md-flex">
+                            <ul class="list-inline d-flex ms-auto">
+                                <li class="ps-3">
+                                    <h5 class="text-info">Πολίτες</h5>
+                                </li>
+                                <li class="ps-3">
+                                    <h5 class="text-inverse">Υπάλληλοι</h5>
+                                </li>
+                            </ul>
+                        </div>
+                        <div id="ct-visits" style="height: 405px;">
+                            <div class="chartist-tooltip" style="top: -17px; left: -12px;">
+                                <span class="chartist-tooltip-value">6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ============================================================== -->
+            <!-- -->
+            <!-- ============================================================== -->
+            <div class="row">
+                <div class="col-md-12 col-lg-12 col-sm-12">
+                    <div class="white-box row align-items-center">
+
+
+                        <div class="col-md-6 ">
+                            <h1>Προβολή Εμβολιαστικών Κέντρων</h1>
+                        </div>
+                        <div class="col-md-6 text-right ">
+                            <a type="submit" value="View Vaccine Centres" asp-action="AddVaccineCentre" asp-controller="Admins" class="btn btn-info text-white btn-outline-secondary " style="font-size:17px;">Προσθήκη Εμβολιαστικού Κέντρου</a>
+
+                        </div>
+
+
+                        <div class="container row p-0 m-0">
+
+                            <div class="col-12 border p-3">
+                                <table class="table table-striped table-bordered" style="width:100%" id="DT_load">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Όνομα Εμβολιαστικού Κέντρου</th>
+                                            <th>Περιοχή Εμβολιαστικού Κέντρου</th>
+                                            <th></th>
+                                        </tr>
+
+                                    </thead>
+
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.Name</td>
+                                            <td>@item.Township</td>
+                                            <td class="text-center"><a type="submit" asp-action="DeleteVaccineCentre" asp-controller="Admins" asp-route-id="@item.ID" class="btn btn-danger text-white btn-outline-secondary " >Διαγραφή</a></td>
+                                        </tr>
+                                    }
+
+                                </table>
+                                <br />
+                                @{
+                                    if (httpContext.HttpContext.Session.GetString("msg") == "true")
+                                    {
+                                        <div class="alert alert-danger text-center" role="alert" id="scroll">
+                                            <h5>Δεν μπορεί να γίνει διαγραφή εμβολιαστικού κέντρου όταν υπάρχουν κλεισμένα ραντεβού </h5>
+                                        </div>
+
+                                        httpContext.HttpContext.Session.Remove("msg");
+                                    }
+                                }
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                    <br /><br />
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+    <script src="~/js/admin/jquery.min.js"></script>
+    <!-- Bootstrap tether Core JavaScript -->
+
+
+    <script src="~/js/admin/jquery.sparkline.min.js"></script>
+    <!--Wave Effects -->
+    <!--Menu sidebar -->
+    <!--Custom JavaScript -->
+    <script src="~/js/admin/custom.js"></script>
+    <!--This page JavaScript -->
+    <!--chartis chart-->
+    <script src="~/js/admin/chartist.min.js"></script>
+    <script src="~/js/admin/chartist-plugin-tooltip.min.js"></script>
+    <script src="~/js/admin/dashboard1.js"></script>
+    <script src="~/js/DataTable.js"></script>
+</body>
+
+</html>
+
+<script>
+    document.getElementById('scroll').scrollIntoView();
+</script>

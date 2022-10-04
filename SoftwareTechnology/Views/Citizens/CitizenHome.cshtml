@@ -1,0 +1,511 @@
+﻿@model MultipleClassJoin
+@using Microsoft.AspNetCore.Http
+
+@inject IHttpContextAccessor httpContext
+
+
+<html>
+<head>
+    <meta charset="UTF-8">
+
+    <link rel='stylesheet' href='https://fullcalendar.io/assets/demo-to-codepen.css'>
+    <link rel='stylesheet' href='https://fullcalendar.io/releases/core/4.1.0/main.min.css'>
+    <link rel='stylesheet' href='https://fullcalendar.io/releases/daygrid/4.1.0/main.min.css'>
+    <link rel='stylesheet' href='https://fullcalendar.io/releases/timegrid/4.1.0/main.min.css'>
+    <script src='https://fullcalendar.io/releases/core/4.1.0/main.min.js'></script>
+    <script src='https://fullcalendar.io/releases/interaction/4.1.0/main.min.js'></script>
+    <script src='https://fullcalendar.io/releases/daygrid/4.1.0/main.min.js'></script>
+    <script src='https://fullcalendar.io/releases/timegrid/4.1.0/main.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js'></script>
+    <link href="~/css/admin/style.min.css" rel="stylesheet">
+
+    <style>
+        .user-bg .overlay-box {
+            background: #6190b7;
+            opacity: 0.85;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            text-align: center
+        }
+
+        #Selected {
+            width: 250px;
+        }
+
+        #Selected option {
+            width: 250px;
+        }
+    </style>
+</head>
+<body>
+
+
+    <!-- ============================================================== -->
+    <!-- Main wrapper - style you can find in pages.scss -->
+    <!-- ============================================================== -->
+    <!-- Page wrapper  -->
+    <!-- ============================================================== -->
+    <div class="page-wrapper border">
+        <!-- ============================================================== -->
+        <!-- Bread crumb and right sidebar toggle -->
+        <!-- ============================================================== -->
+        <div class="page-breadcrumb bg-white">
+            <div class="row align-items-center ">
+                <div class="col-md-6">
+                    <h4 class="page-title fw-bold">Καλώς ήρθες @Model.citizen.Name</h4>
+                </div>
+                <div class="col-md-6 text-right">
+                    <a asp-action="LogOut" asp-controller="Citizens" class="btn btn-info text-white btn-outline-secondary">Αποσύνδεση</a>
+
+                </div>
+
+
+
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+
+        <!-- Container fluid  -->
+        <!-- ============================================================== -->
+        <div class="container-fluid " style="background-color: #f8f9fc">
+
+            <div class="col-lg-6 col-xlg-3 col-md-12 offset-3">
+                <div class="white-box ">
+                    <div class="user-bg">
+                        <img width="100%" alt="user" src="~/img/omic.jpg">
+                        <div class="overlay-box">
+                            <div class="user-content">
+                                <img src="~/img/citizen.png"
+                                     class="thumb-lg img-circle" alt="img">
+                                <h4 class="text-white mt-2 fw-bold">Όνομα Χρήστη: @Model.citizen.username</h4>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="user-btm-box mt-5 d-md-flex">
+                        <div class="col-md-6 col-sm-4 text-center ">
+
+                            <h3>Όνομα </h3>
+                            <h4>@Model.citizen.Name</h4>
+                        </div>
+                        <div class="col-md-6 col-sm-4 text-center ">
+                            <h3>Επώνυμο </h3>
+                            <h4>@Model.citizen.Surname</h4>
+                        </div>
+
+                    </div>
+                    <div class="user-btm-box mt-2 d-md-flex ">
+                        <div class="col-md-6 col-sm-4 text-center ">
+                            <h3>ΑΜΚΑ </h3>
+                            <h4>@Model.citizen.AMKA</h4>
+
+                        </div>
+                        <div class="col-md-6 col-sm-4 text-center ">
+                            <h3>Τηλέφωνο </h3>
+                            @if (Model.citizen.ContactNumber != null)
+                            {
+                                <h4>@Model.citizen.ContactNumber</h4>
+                            }
+                            else
+                            {
+                                <h4>--</h4>
+                            }
+
+                        </div>
+
+                    </div>
+                    <div class="user-btm-box mt-2 d-md-flex ">
+                        <div class="col-md-12 col-sm-4 text-center ">
+
+                            <h3>Δήμος Κατοικίας </h3>
+                            <h4>@Model.citizen.Township</h4>
+                        </div>
+
+
+                    </div>
+                    <br />
+                    <div class=" text-center">
+                        <a asp-action="EditCitizen" asp-controller="Citizens" class="btn btn-info text-white btn-outline-secondary" style="background-color: #607f9e">Επεξεργασία</a>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 col-lg-12 col-sm-12">
+                    <div class="white-box row align-items-center">
+
+                        <form action="CitizenHome" method="post">
+
+                            @if (Model.citizen.Dose < 2)
+                            {
+                                <h3>Επίλεξε Εμβολιαστικό Κέντρο:</h3>
+
+                                <select class="form-select" name="Selected" id="Selected" onchange="this.form.submit()">
+                                    <option value="" selected disabled hidden>Επίλεξε εδώ</option>
+                                    @foreach (var item in Model.vaccineCentreList)
+                                    {
+                                        @if (ViewBag.Selected == item.ID)
+                                        {
+
+                                            <option value="@item.ID" selected> @item.Name  @item.Township</option>
+
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.ID"> @item.Name  @item.Township</option>
+                                        }
+
+
+                                    }
+
+
+
+
+                                </select>
+                            }
+
+
+
+
+                            <br><br>
+
+
+
+
+                            @if (Model.appointmentList != null)
+                            {
+
+
+                                if (Model.citizen.Dose < 2)
+                                {
+                                    <div id='calendar'></div>
+                                    <br />
+                                    <button class="btn col-md-2 btn-outline-warning text-white " style="background-color: #2C3E50;  " id="getevent">Επιλογή</button>
+                                    
+                                    <br /><br />
+                                    if (httpContext.HttpContext.Session.GetString("firstDose") != null)
+                                    {
+                                        VaccineCentre vc = Model.vaccineCentreList.Find(vc => vc.ID == httpContext.HttpContext.Session.GetInt32("vc1"));
+
+                                        <h3>Πρώτη Δόση: @httpContext.HttpContext.Session.GetString("firstDose").Replace("T"," ") @vc.Name @vc.Township</h3>
+
+                                    }
+                                   
+
+                                }
+                                else
+                                {//Sti periptosi tou dose=2 tha mpei sta prota duo if  diladi exei kleisei dio rantevou kai kratane times ta session eno an mpei mia akyri stigmh ua ektelesei to trito if pou ta pernei apo ti vasi
+
+                                    <div class="row">
+                                        <div class="col-md-12 col-lg-12 col-sm-12">
+                                            <div class="white-box row align-items-center">
+
+
+                                                <div class="col-md-12">
+                                                    <h1>Ραντεβού Πολίτη</h1>
+                                                </div>
+
+                                                <div class="container row p-0 m-0">
+
+                                                    <div class="col-12 border p-3">
+
+                                                        <table class="table table-striped table-bordered" style="width:100%" id="DT_load">
+
+                                                            <thead>
+                                                                <tr>
+                                                                    <th></th>
+                                                                    <th>Ημερόμηνια Ραντεβού</th>
+                                                                    <th>Ώρα Ραντεβού</th>
+                                                                    <th>Εμβολιαστικό Κέντρο</th>
+                                                                    <th>Δήμος</th>
+
+                                                                </tr>
+                                                            </thead>
+
+                                                            @for (int i = 0; i <= 1; i++)
+                                                            {
+                                                                string dose = (i + 1).ToString() + "η  Δόση";
+                                                                <tr>
+
+                                                                    <td class="fw-bold">@dose</td>
+                                                                    <td>@Model.appointmentList[i].Date.ToString("yyyy-MM-dd")</td>
+                                                                    <td>@Model.appointmentList[i].Time</td>
+
+                                                                    <td>@Model.vaccineCentreList[i].Name</td>
+                                                                    <td>@Model.vaccineCentreList[i].Township</td>
+
+                                                                </tr>
+                                                            }
+
+
+                                                        </table>
+                                                        <div class="text-center">
+                                                            <a asp-action="DeleteAppointment" asp-controller="Citizens" class="btn btn-danger text-white btn-outline-secondary"> Διαγραφή των ραντεβού</a>
+                                                        </div>
+                                                        <br />
+
+                                                        @{
+                                                            if (httpContext.HttpContext.Session.GetString("msg") == "true")
+                                                            {
+                                                                <div class="alert alert-danger text-center" role="alert" id="scroll">
+                                                                    <h5>Δεν μπορεί να γίνει διαγραφή οταν τουλάχιστον μία δόση έχει πραγματοποιηθει</h5>
+                                                                </div>
+
+                                                                httpContext.HttpContext.Session.Remove("msg");
+                                                            }
+                                                        }
+                                                    </div>
+                                                </div>
+
+
+
+                                            </div>
+
+                                            <br /><br />
+                                        </div>
+                                    </div>
+
+                                }
+
+
+
+                                <input hidden name="firstdose" id="firstdose" />
+                                <input hidden name="secdose" id="secdose" />
+
+
+                            }
+
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+        </div>
+
+    </div>
+
+    <script src="~/js/admin/jquery.min.js"></script>
+    <!-- Bootstrap tether Core JavaScript -->
+    <!--Wave Effects -->
+    <!--Menu sidebar -->
+    <!--Custom JavaScript -->
+    <script src="~/js/admin/custom.js"></script>
+    <!--This page JavaScript -->
+    <!--chartis chart-->
+    <script src="~/js/DataTable.js"></script>
+</body>
+
+</html>
+
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        var Calendar = FullCalendar.Calendar;
+        var calendarEl = document.getElementById("calendar");
+
+        var calendar = new Calendar(calendarEl, {
+            plugins: ["timeGrid", "interaction"],
+            header: {
+                left: "prev,next today",
+                center: "title",
+                right: "timeGridFourDay"
+            },
+            defaultView: "timeGridFourDay",
+            views: {
+                timeGridFourDay: {
+                    type: "timeGrid",
+                    duration: { days: 7 },
+                    buttonText: "7 day"
+                }
+            },
+            slotLabelFormat: {
+                hour: "numeric",
+                minute: "2-digit",
+                omitZeroMinute: true,
+                meridiem: "short"
+            },
+            @if (Model.citizen.Dose == 0)
+            {
+
+                  @:validRange: function () {
+
+                    @: today = new Date();
+
+                    @: today.setDate(today.getDate() + 1);
+                    @: endDate = new Date(today);
+                    @: endDate.setDate(endDate.getDate() + 14);
+
+                    @: return {
+
+                        @: start: today,
+                        @: end: endDate
+
+                    @: };
+                @: },
+                @:selectable: true,
+
+
+
+
+            }
+            else if (Model.citizen.Dose == 1)
+            {
+
+
+                @:validRange: function () {
+
+                 @:var startDate = new Date("@httpContext.HttpContext.Session.GetString("firstDose")");
+
+                 @: startDate.setDate(startDate.getDate() + 28);
+                 @: endDate = new Date(startDate);
+                 @: endDate.setDate(endDate.getDate() + 14);
+
+
+                 @: return {
+                    @: start: startDate,
+                    @: end: endDate
+                    @: };
+                @: },
+                @:selectable: true,
+
+            }
+            else
+            {
+                 @:selectable: false,
+
+            }
+
+            locale: 'gr',
+            allDaySlot: false,
+            firstDay: 1,
+            minTime: "08:00:00",
+            maxTime: "18:00:00",
+            contentHeight: "auto",
+            slotDuration: "00:30:00",
+
+            displayEventTime: true,
+            eventColor: '#b7ff00',
+            select: function (info) {
+                if (calendar.getEventById("Test") != null) {
+                    calendar.getEventById("Test").remove();
+
+                }
+                //console.log(info);
+                calendar.addEvent({  start: info.start, end: info.end, type: "Test", id: "Test" });
+
+                calendar.unselect();
+
+
+            },
+            eventClick: function (eventClickInfo) {
+
+
+                if (eventClickInfo.event.extendedProps.type != "busy") {
+                    eventClickInfo.event.remove();
+
+                }
+
+            },
+
+            selectOverlap: false,
+            selectAllow: function (selectInfo) {
+
+                var stM = moment(selectInfo.start);
+                var enM = moment(selectInfo.end);
+                var diff = enM.diff(stM, "minutes");
+                console.log(diff);
+                if (diff > 30) {
+                    return false;
+                }
+                return true;
+            },
+
+            eventSources: [
+                {
+                    id: "busy", backgroundColor: "red",
+                    events: [
+
+                      @if (Model.appointmentList != null)
+                      {
+                    @foreach (var item in Model.appointmentList) {
+
+                                @:{
+                                        @: title: ("Μη Διαθέσιμο Ραντεβού"),
+                                        @: start: ('@item.Date.ToString("yyyy-MM-dd") @item.Time.ToString()'),
+                                        @: end: ('@item.Date.ToString("yyyy-MM-dd") @item.Time.Add(new TimeSpan(0, 30, 0)).ToString()'),
+                                        @: type: ("busy")
+                                @:}
+                            if (item != Model.appointmentList.Last())
+                        {
+                                @: ,
+                            }
+
+                    }
+                      }
+
+                    ]
+                }
+            ]
+
+
+
+        });
+
+        calendar.render();
+        function getEvents() {
+
+            @if (httpContext.HttpContext.Session.GetString("firstDose") == null)
+            {
+
+                @:document.getElementById("firstdose").value = toIsoString(calendar.getEventById("Test").start);
+
+            }
+            else if (httpContext.HttpContext.Session.GetString("secDose") == null)
+            {
+
+
+                @:document.getElementById("firstdose").value = "@httpContext.HttpContext.Session.GetString("firstDose")";
+                @:document.getElementById("secdose").value = toIsoString(calendar.getEventById("Test").start);
+
+
+
+            }
+
+        }
+
+
+
+        document.getElementById('getevent').addEventListener('click', getEvents);
+    });
+
+
+    function toIsoString(date) {
+        var tzo = -date.getTimezoneOffset(),
+            dif = tzo >= 0 ? '+' : '-',
+            pad = function (num) {
+                return (num < 10 ? '0' : '') + num;
+            };
+
+        return date.getFullYear() +
+            '-' + pad(date.getMonth() + 1) +
+            '-' + pad(date.getDate()) +
+            'T' + pad(date.getHours()) +
+            ':' + pad(date.getMinutes()) +
+            ':' + pad(date.getSeconds());
+    }
+
+
+    document.getElementById('scroll').scrollIntoView();
+    
+</script>

@@ -1,0 +1,235 @@
+﻿@model IList<SoftwareTechnology.Models.MultipleClassJoin>
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContext
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+
+    <link href="~/css/admin/style.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- ============================================================== -->
+    <!-- Main wrapper - style you can find in pages.scss -->
+    <!-- ============================================================== -->
+    <!-- Page wrapper  -->
+    <!-- ============================================================== -->
+    <div class="page-wrapper border">
+        <!-- ============================================================== -->
+        <!-- Bread crumb and right sidebar toggle -->
+        <!-- ============================================================== -->
+        <div class="page-breadcrumb bg-white">
+            <div class="row align-items-center ">
+                <div class="col-md-6">
+                    <h4 class="page-title">Καλώς ήρθες @ViewBag.name</h4>
+                </div>
+                <div class="col-md-6 text-right">
+                    <a asp-action="LogOut" asp-controller="Employees" class="btn btn-info text-white btn-outline-secondary">Αποσύνδεση</a>
+
+                </div>
+
+
+
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+       
+        <!-- Container fluid  -->
+        <!-- ============================================================== -->
+        <div class="container-fluid " style="background-color: #f8f9fc">
+            <div  class="col-md-12 text-center">
+                <h2>Εμβολιστικό Κέντρο: @ViewBag.VcName</h2>
+            </div>
+            <br /><br />
+            <div class="col-lg-6 col-xlg-3 col-md-12 offset-3">
+                <div class="white-box ">
+                    <div class="user-bg ">
+                        <img width="100%" alt="user" src="~/img/wallp.jpg">
+                        <div class="overlay-box">
+                            <div class="user-content">
+                                <img src="~/img/dc.png"
+                                     class="thumb-lg img-circle" alt="img">
+                                <h4 class="text-white bold mt-2 fw-bold">Όνομα Χρήστη: @ViewBag.username</h4>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="user-btm-box mt-5 d-md-flex">
+                        <div class="col-md-6 col-sm-4 text-center ">
+
+                            <h3>Όνομα </h3>
+                            <h4>@ViewBag.name</h4>
+                        </div>
+                        <div class="col-md-6 col-sm-4 text-center ">
+                            <h3>Επώνυμο </h3>
+                            <h4>@ViewBag.surname</h4>
+                        </div>
+
+                    </div>
+                    <div class="user-btm-box mt-3 d-md-flex">
+                        <div class="col-md-6 col-sm-4 text-center ">
+                            <h3>ΑΦΜ </h3>
+                            <h4>@ViewBag.AFM</h4>
+
+                        </div>
+                        <div class="col-md-6 col-sm-4 text-center ">
+                            <h3>Τηλέφωνο </h3>
+                            @if (ViewBag.cont != null)
+                            {
+                                <h4>@ViewBag.cont</h4>
+                            }
+                            else
+                            {
+                                <h4>--</h4>
+                            }
+
+                        </div>
+
+                    </div>
+                    <div class=" text-center">
+                        <a asp-action="EditEmployee" asp-controller="Employees" class="btn text-white btn-outline-secondary" style="background-color:#4dc4b0">Επεξεργασία</a>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================== -->
+            <!-- Three charts -->
+            <!-- ============================================================== -->
+            <div class="row justify-content-center">
+                <div class="col-lg-4 col-md-12">
+                    <div class="white-box analytics-info">
+                        <h3 class="box-title">Συνολικοί Υπάλληλοι Στό Εμβολιαστικό Κέντρο</h3>
+                        <ul class="list-inline two-part d-flex align-items-center mb-0">
+                            <li>
+                                <div id="sparklinedash">
+                                    <canvas width="67" height="30"
+                                            style="display: inline-block; width: 67px; height: 30px; vertical-align: top;"></canvas>
+                                </div>
+                            </li>
+                            <li class="ms-auto"><span class="counter text-success">@ViewBag.countEMP</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-12">
+                    <div class="white-box analytics-info">
+                        <h3 class="box-title">Συνολικοί Εμβολιασμένοι Πολίτες Στό Εμβολιαστικό Κέντρο</h3>
+                        <ul class="list-inline two-part d-flex align-items-center mb-0">
+                            <li>
+                                <div id="sparklinedash2">
+                                    <canvas width="67" height="30"
+                                            style="display: inline-block; width: 67px; height: 30px; vertical-align: top;"></canvas>
+                                </div>
+                            </li>
+                            @{
+                                List<Citizen> l = Model.Select(x => x.citizen).Distinct().ToList();
+                                int count = 0;
+                                foreach(Citizen c in l)
+                                {
+                                    bool r =  Model.Any(x => x.appointment.Date <= DateTime.Today && x.appointment.citizenAMKA == c.AMKA);
+                                    if (r)
+                                    {
+                                        count++;
+                                    }
+                                }
+
+                            }
+                            <li class="ms-auto"><span class="counter text-purple"> @count</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-12">
+                    <div class="white-box analytics-info">
+                        <h3 class="box-title">Συνολικά Κλεισμένα Ραντεβού Στό Εμβολιαστικό Κέντρο</h3>
+                        <ul class="list-inline two-part d-flex align-items-center mb-0">
+                            <li>
+                                <div id="sparklinedash3">
+                                    <canvas width="67" height="30"
+                                            style="display: inline-block; width: 67px; height: 30px; vertical-align: top;"></canvas>
+                                </div>
+                            </li>
+                            <li class="ms-auto">
+                                <span class="counter text-info">@Model.Count</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 col-lg-12 col-sm-12">
+                    <div class="white-box row align-items-center">
+
+
+                        <div class="col-md-12">
+                            <h1>Ραντεβού Εμβολιαστικού Κέντρου @ViewBag.VcName</h1>
+                        </div>
+
+                        <div class="container row p-0 m-0">
+
+                            <div class="col-12 border p-3">
+                                <table class="table table-striped table-bordered" style="width:100%" id="DT_load">
+
+                                    <thead>
+                                        <tr>
+                                            <th>ΑΜΚΑ Πολίτη</th>
+                                            <th>Όνομα Πολίτη</th>
+                                            <th>Επώνυμο Πολίτη</th>
+                                            <th>Ημερόμηνια Ραντεβού</th>
+                                            <th>Ώρα Ραντεβού</th>
+
+
+
+                                        </tr>
+                                    </thead>
+
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.citizen.AMKA</td>
+                                            <td>@item.citizen.Name</td>
+                                            <td>@item.citizen.Surname</td>
+                                            <td>@item.appointment.Date.ToString("yyyy/MM/dd")</td>
+                                            <td>@item.appointment.Time</td>
+
+
+
+                                        </tr>
+                                    }
+
+                                </table>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                    <br /><br />
+                </div>
+            </div>
+
+
+
+        </div>
+
+    </div>
+
+    <script src="~/js/admin/jquery.min.js"></script>
+    <!-- Bootstrap tether Core JavaScript -->
+    <!--Wave Effects -->
+    <!--Menu sidebar -->
+    <!--Custom JavaScript -->
+    <script src="~/js/admin/custom.js"></script>
+    <!--This page JavaScript -->
+    <!--chartis chart-->
+    <script src="~/js/DataTable.js"></script>
+</body>
+
+</html>
+
+
+

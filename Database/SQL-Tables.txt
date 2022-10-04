@@ -1,0 +1,82 @@
+create table Admins
+(
+    username nvarchar(45) not null
+        constraint PK_Admins
+            primary key,
+    password nvarchar(45) not null
+)
+go
+
+create table Citizens
+(
+    AMKA          nvarchar(45)  not null
+        constraint PK_Citizens
+            primary key,
+    Name          nvarchar(50)  not null,
+    Surname       nvarchar(50)  not null,
+    ContactNumber nvarchar(max),
+    Dose          int default 0 not null,
+    Username      nvarchar(45)  not null
+        unique,
+    Password      nvarchar(45)  not null,
+    Township      nvarchar(50)  not null
+)
+go
+
+create table VaccineCentres
+(
+    ID       int identity
+        constraint PK_VaccineCentres
+            primary key,
+    Name     nvarchar(50) not null,
+    Township nvarchar(50) not null
+)
+go
+
+create table Appointments
+(
+    ID              int identity
+        constraint PK_Appointments
+            primary key,
+    Time            time         not null,
+    citizenAMKA     nvarchar(45) not null
+        constraint FK_Appointments_Citizens_citizenAMKA
+            references Citizens
+            on delete cascade,
+    vaccineCentreID int          not null
+        constraint FK_Appointments_VaccineCentres_vaccineCentreID
+            references VaccineCentres
+            on delete cascade,
+    Date            date         not null
+)
+go
+
+create index IX_Appointments_citizenAMKA
+    on Appointments (citizenAMKA)
+go
+
+create index IX_Appointments_vaccineCentreID
+    on Appointments (vaccineCentreID)
+go
+
+create table Employees
+(
+    AFM             nvarchar(45) not null
+        constraint PK_Employees
+            primary key,
+    Name            nvarchar(50) not null,
+    Surname         nvarchar(50) not null,
+    ContactNumber   nvarchar(max),
+    Username        nvarchar(40) not null
+        unique,
+    Password        nvarchar(45) not null,
+    vaccineCentreID int          not null
+        constraint FK_Employees_VaccineCentres_vaccineCentreID
+            references VaccineCentres
+            on delete cascade
+)
+go
+
+create index IX_Employees_vaccineCentreID
+    on Employees (vaccineCentreID)
+go

@@ -1,0 +1,107 @@
+﻿@model Citizen
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+
+<head>
+
+    <link href="~/css/admin/style.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+   
+
+    <div class="page-wrapper" style="background-color: #f8f9fc">
+
+        <div class="container-fluid col-8 ">
+
+
+            <div class="card">
+                <div class="card-body">
+                    <form class="form-horizontal form-material" method="post">
+                        <div class="form-group mb-4">
+                            <label class="col-md-12 p-0" asp-for="username">Όνομα Χρήστη</label>
+                            <div class="col-md-12 border-bottom p-0">
+                                <input type="text" asp-for="username" value="@Model.username" required class="form-control p-0 border-0" onkeypress="CheckSpace(event)">
+                            </div>
+                        </div>
+                        <div class="form-group mb-4">
+                            <label class="col-md-12 p-0" asp-for="Name">Όνομα</label>
+                            <div class="col-md-12 border-bottom p-0">
+                                <input type="text" asp-for="Name" value="@Model.Name" class="form-control p-0 border-0" onkeypress="CheckSpace(event)">
+                            </div>
+                        </div>
+                        <div class="form-group mb-4">
+                            <label class="col-md-12 p-0" asp-for="Surname">Επώνυμο</label>
+                            <div class="col-md-12 border-bottom p-0">
+                                <input type="text" asp-for="Surname" value="@Model.Surname" class="form-control p-0 border-0" onkeypress="CheckSpace(event)">
+                            </div>
+                        </div>
+                        <div class="form-group mb-4">
+                            <label for="example-email" class="col-md-12 p-0" asp-for="AMKA">AMKA</label>
+                            <div class="col-md-12 border-bottom p-0">
+                                <input class="form-control p-0 border-0" type="text" asp-for="AMKA" value="@Model.AMKA" readonly style="color:darkgrey">
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label class="col-md-12 p-0" asp-for="ContactNumber">Τηλέφωνο</label>
+                            <div class="col-md-12 border-bottom p-0">
+                                <input type="text" pattern="[0-9]+" asp-for="ContactNumber"  maxlength="10" placeholder="@Model.ContactNumber"
+                                       class="form-control p-0 border-0" onkeypress="CheckSpace(event)">
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label class="col-md-12 p-0" asp-for="Township">Δήμος Κατοικίας</label>
+                            <div class="col-md-12 border-bottom p-0">
+
+                                @Html.DropDownListFor(t => t.Township,
+                                new SelectList(Enum.GetNames(typeof(Townships)),Model.Township))
+                                
+
+                               
+
+                            </div>
+                        </div>
+
+                        <input hidden type="text" asp-for="password" />
+                        <input hidden type="text" asp-for="Dose" />
+                        <div class=" col-xl-12  h5 ">
+                            <div asp-validation-summary="All" class=" text-danger" list-style: none;></div>
+
+                        </div>
+                        <div class="form-group mb-4">
+                            <div class="col-sm-12 text-center">
+                                <button type="submit" asp-action="EditCitizen" asp-controller="Citizens" class="btn btn-success  text-white btn-outline-secondary">Ενημέρωση</button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+          
+        </div>
+       
+
+    </div>
+ 
+
+    <script src="~/js/admin/jquery.min.js"></script>
+   
+    <script src="~/js/admin/custom.js"></script>
+
+</body>
+
+</html>
+
+<script>
+
+    function CheckSpace(event) {
+        if (event.which == 32) {
+            event.preventDefault();
+            return false;
+        }
+    }
+</script>
